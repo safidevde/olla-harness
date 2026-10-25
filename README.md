@@ -28,6 +28,19 @@ media/
   chat.html/css/js   the webview UI
 ```
 
+## Release
+
+`npm run package` builds `olla-harness-<version>.vsix` locally.
+
+To ship: bump `version` in package.json on main, then push main to the `release` branch
+(`git push origin main:release`). [.github/workflows/release.yml](.github/workflows/release.yml) builds the .vsix,
+publishes it, and creates the GitHub release `v<version>` with the .vsix attached.
+A version that's already released is skipped.
+
+Repo secrets (Settings → Secrets and variables → Actions), each optional:
+- `VSCE_PAT`: Azure DevOps token with Marketplace → Manage scope, for the VS Code Marketplace
+- `OVSX_PAT`: open-vsx.org token, for Open VSX (Cursor, VSCodium)
+
 Common changes:
 - **New tool**: add it to `TOOLS` and a `case` in `runTool` (src/tools.js).
 - **Prompt wording**: src/prompt.js.

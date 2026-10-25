@@ -3,13 +3,40 @@
   "displayName": "Olla Harness",
   "description": "Local coding agent chat backed by Ollama",
   "version": "0.0.1",
+  "publisher": "safidevde",
+  "license": "MIT",
+  "icon": "icon.png",
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "keywords": [
+    "ollama",
+    "agent",
+    "local",
+    "llm",
+    "chat"
+  ],
   "engines": {
     "vscode": "^1.90.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/safidevde/olla-harness.git"
+  },
   "main": "./src/extension.js",
+  "files": [
+    "src",
+    "media",
+    "icon.svg",
+    "icon.png",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "node src/parse.js",
-    "test:live": "node test/live.js"
+    "test:live": "node test/live.js",
+    "package": "npx @vscode/vsce package",
+    "publish": "npx @vscode/vsce publish"
   },
   "activationEvents": [],
   "contributes": {

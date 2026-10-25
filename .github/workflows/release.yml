@@ -1,0 +1,57 @@
+# Push to the `release` branch to ship the version in package.json:
+# builds the .vsix, publishes it to the Marketplace / Open VSX (when their tokens are set),
+# and creates the GitHub release v<version> with the .vsix attached.
+# A version that already has a GitHub release is skipped, so bump `version` to ship again.
+name: Release
+
+on:
+  push:
+    branches: [release]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm test
+
+      - name: Read version
+        id: v
+        run: |
+          v=$(node -p "require('./package.json').version")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "vsix=olla-harness-$v.vsix" >> "$GITHUB_OUTPUT"
+          if gh release view "v$v" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::v$v is already released. Bump version in package.json to ship a new one."
+          fi
+
+      - name: Build .vsix
+        run: npx @vscode/vsce@3 package -o ${{ steps.v.outputs.vsix }}
+
+      - name: Publish to VS Code Marketplace
+        if: steps.v.outputs.exists != 'true' && env.VSCE_PAT != ''
+        run: npx @vscode/vsce@3 publish --packagePath ${{ steps.v.outputs.vsix }}
+
+      - name: Publish to Open VSX
+        if: steps.v.outputs.exists != 'true' && env.OVSX_PAT != ''
+        run: npx ovsx publish ${{ steps.v.outputs.vsix }} -p "$OVSX_PAT"
+
+      - name: Create GitHub release
+        if: steps.v.outputs.exists != 'true'
+        run: gh release create "v${{ steps.v.outputs.version }}" ${{ steps.v.outputs.vsix }} --target "$GITHUB_SHA" --title "v${{ steps.v.outputs.version }}" --generate-notes
