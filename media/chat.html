@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{csp}}; script-src 'nonce-{{nonce}}';">
+  <link rel="stylesheet" href="{{css}}">
+</head>
+<body>
+  <div id="log"></div>
+  <div id="welcome">
+    <h3>Olla Harness</h3>
+    <p>Local agent for <b>{{folder}}</b>. It can read, write and run things here, and asks before writes and commands.</p>
+    <button class="chip">Explain what this project does</button>
+    <button class="chip">Find bugs in the main file</button>
+    <button class="chip">Add a README for this project</button>
+  </div>
+  <div id="thinking" hidden>Thinking</div>
+  <div id="composer">
+    <textarea id="input" rows="1" placeholder="Ask the agent… (Enter to send, Shift+Enter for newline)"></textarea>
+    <button id="send">Send</button>
+  </div>
+  <script nonce="{{nonce}}" src="{{js}}"></script>
+</body>
+</html>

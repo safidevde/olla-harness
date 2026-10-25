@@ -1,0 +1,74 @@
+{
+  "name": "olla-harness",
+  "displayName": "Olla Harness",
+  "description": "Local coding agent chat backed by Ollama",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "main": "./src/extension.js",
+  "scripts": {
+    "test": "node src/parse.js",
+    "test:live": "node test/live.js"
+  },
+  "activationEvents": [],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ollaHarness",
+          "title": "Olla Harness",
+          "icon": "icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ollaHarness": [
+        {
+          "type": "webview",
+          "id": "ollaHarness.chat",
+          "name": "Chat"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ollaHarness.history",
+        "title": "Olla: Chat History",
+        "icon": "$(history)"
+      },
+      {
+        "command": "ollaHarness.reset",
+        "title": "Olla: New Chat",
+        "icon": "$(add)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "ollaHarness.history",
+          "when": "view == ollaHarness.chat",
+          "group": "navigation"
+        },
+        {
+          "command": "ollaHarness.reset",
+          "when": "view == ollaHarness.chat",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Olla Harness",
+      "properties": {
+        "ollaHarness.model": {
+          "type": "string",
+          "default": "qwen2.5-coder:7b"
+        },
+        "ollaHarness.url": {
+          "type": "string",
+          "default": "http://localhost:11434"
+        }
+      }
+    }
+  }
+}
